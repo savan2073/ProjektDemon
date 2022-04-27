@@ -5,9 +5,9 @@
 
 void help(bool full);
 
-void help_parametry();
+void help_params();
 
-void help_actions();
+void help_launch();
 
 
 #endif
