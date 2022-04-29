@@ -135,7 +135,6 @@ void copy_file_rw(char* source_path, char* destination_path){
     int dfd = open(destination_path, O_WRONLY);
 
     //read part by part
-    //not finished!!!!!! do reading and writing to dest file
     do{
         bytes_read = read(sfd, buffer, sizeof(buffer));
         write_whole(dfd, buffer, bytes_read);
@@ -179,4 +178,8 @@ void copy_file(char* source_path, char* destination_path, bool mmap_on){
     }else{
         copy_file_rw(source_path, destination_path);
     }
+}
+//not finished
+void remove_files(config c){
+
 }
