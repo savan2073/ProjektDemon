@@ -26,14 +26,14 @@ file_list* list_add(file_list* list, char* name, char* path, FILE_TYPE type, boo
 }
 
 file_list* list_append(file_list* list, file_list* next_list){
-    while(first->next != NULL){
-        first = first->next;
+    while(list->next != NULL){
+        list = list->next;
     }
-    first->next = next_list->next;
+    list->next = next_list->next;
     free(next_list->name);
     free(next_list->path);
     free(next_list);
-    return first;
+    return list;
 }
 
 file_list* list_revere(file_list* list){
@@ -41,9 +41,9 @@ file_list* list_revere(file_list* list){
     file_list* next_list = NULL;
     while(list->next != NULL){
         list = list->next;
-        next = first;
+        next_list = first;
         first = malloc(sizeof(file_list));
-        first->next = next;
+        first->next = next_list;
         first->name = malloc(strlen(list->name)+1);
         strcpy(first->name, list->name);
         first->path = malloc(strlen(list->path)+1);
@@ -53,7 +53,7 @@ file_list* list_revere(file_list* list){
     }
     next_list = first;
     first = malloc(sizeof(file_list));
-    first->next = next;
+    first->next = next_list;
     first->name = NULL;
     first->path = NULL;
     return first;

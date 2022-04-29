@@ -6,6 +6,7 @@
 #include <syslog.h>
 #include <stdbool.h>
 #include <signal.h>
+#include <unistd.h>
 
 #include "help.h"
 

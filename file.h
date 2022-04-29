@@ -1,6 +1,10 @@
 #ifndef DIR_H
 #define DIR_H
 
+#include <stdbool.h>
+#include "filelist.h"
+#include "filetype.h"
+
 //check type of file given in param
 //whether symlink, dir, file etc.
 FILE_TYPE get_file_type(const char* path);
@@ -9,6 +13,7 @@ FILE_TYPE get_file_type(const char* path);
 //does it exist and user can open dir
 //in case of error gives annoucement at stdout
 bool check_dir(const char* name);
+
 
 //check if dir contains other dir
 bool contains(const char* name1, const char* name2);

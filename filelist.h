@@ -15,7 +15,8 @@ struct file_list{
     bool mmap; //whether file should be copied with mmap
     FILE_TYPE type;
     file_list* next; //indicator on next element
-}
+};
+
 //create new list
 file_list* list_create();
 
