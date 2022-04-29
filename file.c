@@ -4,6 +4,10 @@
 #include <dirent.h>
 #include <linux/limits.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <syslog.h>
+#include <assert.h>
+#include <sys/mman.h>
 
 #include "file.h"
 
@@ -90,4 +94,81 @@ file_list* read_dir_content(char* path, bool recursive){
     }
     closedir(directory);
     return list;
+}
+
+void create_file(char* path){
+    __mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH; //permissions
+    int fd = open(path, O_WRONLY | O_EXCL | O_CREAT, mode); //file creation
+    if(fd == -1){
+        syslog(LOG_CRIT, "ERROR: file can't be created");
+        exit(EXIT_FAILURE);
+    }
+    close(fd);
+}
+ssize_t write_whole(int fd, const void* buffer, size_t count){
+    size_t left_to_write = count;
+    while(left_to_write > 0){
+        size_t written = write(fd, buffer, count);
+        if(written == -1){
+            return -1;
+        }else{
+            //check how much left to be written
+            left_to_write -= written;
+        }
+        //making sure to not write too much
+        assert ( left_to_write == 0);
+        //number of bytes written is count
+        return count;
+    }
+}
+
+void copy_file_rw(char* source_path, char* destination_path){
+    unsigned char buffer[16];
+    size_t offset = 0;
+    size_t bytes_read;
+
+    //open source file
+    int sfd = open(source_path, O_RDONLY);
+
+    //create destination file
+    create_file(destination_path);
+    int dfd = open(destination_path, O_WRONLY);
+
+    //read part by part
+    //not finished!!!!!! do reading and writing to dest file
+    do{
+        bytes_read = read(sfd, buffer, sizeof(buffer));
+        write_whole(dfd, buffer, bytes_read);
+        //keep track of position in file
+        offset += bytes_read;
+    }while(bytes_read == sizeof(buffer));
+
+    //close file descriptor
+    close(sfd);
+    close(dfd);
+}
+
+void copy_file_mmap(char* source_path, char* destination_path){
+    int sfd, dfd;
+    char *source,* destination;
+    struct stat s;
+    size_t filesize;
+
+    //source file
+    sfd = open(source_path,O_RDONLY);
+    filesize = lseek(sfd, 0, SEEK_END);
+    source = mmap(NULL, filesize, PROT_READ, MAP_PRIVATE, sfd, 0);
+
+    //destination file
+    dfd = open(destination_path, O_RDWR | O_CREAT, 0666);
+    ftruncate(dfd, filesize);
+    destination = mmap(NULL, filesize, PROT_READ | PROT_WRITE, MAP_SHARED, dfd, 0);
+
+    //making actual copy
+    memcpy(destination, source, filesize);
+    munmap(source, filesize);
+    munmap(destination, filesize);
+
+    close(sfd);
+    close(dfd);
 }
