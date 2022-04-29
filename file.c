@@ -172,3 +172,11 @@ void copy_file_mmap(char* source_path, char* destination_path){
     close(sfd);
     close(dfd);
 }
+
+void copy_file(char* source_path, char* destination_path, bool mmap_on){
+    if(mmap_on == true){
+        copy_file_mmap(source_path,destination_path);
+    }else{
+        copy_file_rw(source_path, destination_path);
+    }
+}
