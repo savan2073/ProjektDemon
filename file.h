@@ -5,6 +5,7 @@
 #include "filelist.h"
 #include "filetype.h"
 #include "config.h"
+#include <stdio.h>
 
 //check type of file given in param
 //whether symlink, dir, file etc.
@@ -29,7 +30,7 @@ file_list* read_dir_content(char* path, bool recursive);//done
 void create_file(char* path);//done
 
 //save whole buffer to file descriptor
-ssize_t write_whole(int fd, const void* buffer, size_t count);//done
+__ssize_t write_whole(int fd, const void* buffer, size_t count);//done
 
 //copy content of one file and create identical copy
 void copy_file_rw(char* source_path, char* destination_path);//done
