@@ -1,4 +1,14 @@
-OBJ = main.o
-all: projekt
-projekt: $(OBJ)
-	gcc $(OBJ) -o projekt
+EXECUTABLES := $(wildcard *.c)
+
+all:
+	gcc -o demon $(EXECUTABLES)
+
+install:
+	cp demon /usr/bin
+
+uninstall:
+	rm /usr/bin/demon
+
+clean:
+	rm demon
+
